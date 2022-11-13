@@ -1,2 +1,3 @@
 # AutoMakeBlank
-You can use this python file to make blanks randomly in your article (in English)
+plz read my comment in 'issues' first!
+Thank you
