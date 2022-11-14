@@ -1,3 +1,4 @@
 # AutoMakeBlank
-plz read my comment in 'issues' first!
-Thank you
+这个小玩意可以在英语文章中随机挖空。
+你可以用它来与你已有朗读音频的英语文章帮助你练习听力
+或者搞点其他的qwq
