@@ -1,4 +1,4 @@
-#DESIGNED BY Yiwen Zhang@XJTU
+#DESIGNED BY Matt Zhang@XJTU
 import re
 import random
 import sys
