@@ -1,0 +1,186 @@
+import re
+import random
+
+signBlkList = ['',' ']
+blankSignBlkList = [',','.','"','\n','!','?','(',')',':',';']
+
+ProgSetting = {
+    'blankMinRate': 0.095,
+    'blankMaxRate': 0.125,
+    'blankRate': 0.04,
+    'noCapitalWord': False
+}
+
+def blankCheck(stringIn):
+    checkStatus = re.search(r'_+', stringIn)
+    return checkStatus
+
+def blankMaker(org_txt, wordsBlkList, blank_maximum, deletedWord):
+    commentSign = False
+    blankRate = 0.04
+    forbiddenLst = []
+    blankedList = []
+    for item in blankSignBlkList:
+        forbiddenLst.append(item)
+    for item in wordsBlkList:
+        forbiddenLst.append(item)
+    blankNumber2 = 0
+    for item in org_txt:
+        if blankCheck(item):
+            blankNumber2 += 1
+    for txt_vocab in org_txt:
+        if blankNumber2 >= blank_maximum:
+            blankedList.append(txt_vocab)
+            continue
+        if txt_vocab.lower() in deletedWord:
+            blankedList.append(txt_vocab)
+            continue
+        if txt_vocab.lower() != txt_vocab and True:
+            blankedList.append(txt_vocab)
+            continue
+        if commentRDet(txt_vocab) and commentLDet(txt_vocab):
+            blankedList.append(txt_vocab)
+            continue
+        elif commentLDet(txt_vocab):
+            commentSign = True
+            blankedList.append(txt_vocab)
+            continue
+        elif commentRDet(txt_vocab):
+            commentSign = False
+            blankedList.append(txt_vocab)
+            continue
+        if commentSign == True:
+            blankedList.append(txt_vocab)
+            continue
+        if txt_vocab.lower() in forbiddenLst:
+            blankedList.append(txt_vocab)
+        else:
+            rdNum = random.randint(1,10000)
+            if rdNum <= blankRate*10000:
+                deletedWord.append(txt_vocab.lower())
+                letter_num = len(txt_vocab)
+                if letter_num <= 4:
+                    txt_vocab = '________'
+                else:
+                    txt_vocab = '________'
+                    add_line = int((letter_num - 4) * 1.28)
+                    counter = 0
+                    while counter < add_line:
+                        txt_vocab += '_'
+                        counter += 1
+                blankedList.append(txt_vocab)
+                blankNumber2 += 1
+            else:
+                blankedList.append(txt_vocab)
+    return blankedList, deletedWord
+
+def textCompose(outPutList, words_div_copy):
+    outPutWord = ''
+    quotationMark = 1
+    questionNum = 1
+    wordNum = 0
+    for item in outPutList:
+        if item == '(':
+            outPutWord += item
+        elif item == '"':
+            if quotationMark == 1:
+                outPutWord += item
+                quotationMark = 2
+            elif quotationMark == 2:
+                outPutWord += F'{item} '
+                quotationMark = 1
+        elif item == '\n':
+            if outPutList[wordNum-1] == '\n':
+                pass
+            else:
+                outPutWord += item
+        elif blankCheck(item):
+            outPutWord += F'{str(questionNum)}.{item} '
+            questionNum += 1
+        elif commentLDet(item) and commentRDet(item):
+            outPutWord += item[3:re.search(r'￥>￥', item).span()[0]]
+            outPutWord += item[re.search(r'￥>￥', item).span()[1]:]
+        elif commentLDet(item):
+            outPutWord += item[3:]
+        elif commentRDet(item):
+            outPutWord += item[:re.search(r'￥>￥', item).span()[0]]
+            outPutWord += item[re.search(r'￥>￥', item).span()[1]:]
+        elif wordNum+1 < len(words_div_copy):
+            if outPutList[wordNum+1] == '.':
+                outPutWord += item
+            elif outPutList[wordNum+1] == ',':
+                outPutWord += item
+            elif outPutList[wordNum+1] == ')':
+                outPutWord += item
+            else:
+                outPutWord += F'{item} '
+        else:
+            outPutWord += F'{item} '
+        wordNum += 1
+    return outPutWord
+
+def timeApplauseLineDel(ckWord, articleSource):
+    if articleSource.lower() == 'ted':
+        if re.search(r'\d+:\d+\n', ckWord) and len(ckWord) == 5:
+            return F'￥<￥{ckWord}￥>￥'
+        elif re.search(r'\d+:\d+\n', ckWord) and len(ckWord) == 6:
+            return F'￥<￥{ckWord[:-1]}￥>￥\n'
+        elif ckWord[0] == '(' and ckWord[-2] == ')':
+            if '(' not in ckWord[1:-3] and ')' not in ckWord[1:-3]:
+                return F'￥<￥{ckWord[:-1]}￥>￥\n'
+            else:
+                return ckWord
+        else:
+            return ckWord
+    elif articleSource.lower() == 'cnn10':
+        if ckWord[0] == '(' and ckWord[-2] == ')':
+            if '(' not in ckWord[1:-2] and ')' not in ckWord[1:-2]:
+                return F'￥<￥{ckWord[:-1]}￥>￥\n'
+            else:
+                return ckWord
+        elif re.search(r'[A-Z]{3}.*:', ckWord):
+            divWord = re.split(r'(:)', ckWord)
+            outWord = ''
+            for numCount in range(0,len(divWord)):
+                if numCount == 0:
+                    outWord += F'￥<￥{divWord[0]}￥>￥'
+                else:
+                    outWord += divWord[numCount]
+            return outWord
+        else:
+            return ckWord
+    else:
+        return ckWord
+
+def div_words(word_file, keep_sign):
+    if keep_sign == 'n':
+        #don't keep sign
+        words_splited = re.split('[,|!|.|\s|\n|"|?|(|)|:|;]', word_file)
+    else:
+        #keep sign except space and blank
+        words_splited = re.split(r'([,|!|.|\s|\n|"|?|(|)|:|;])', word_file)
+    nCounter = 0
+    while nCounter < len(words_splited):
+        if words_splited[nCounter] in signBlkList:
+            words_splited.pop(nCounter)
+        else:
+            nCounter += 1
+    return words_splited
+
+def commentLDet(text):
+    if re.search(r'￥<￥', text):
+        return True
+    else:
+        return False
+
+def commentRDet(text):
+    if re.search(r'￥>￥', text):
+        return True
+    else:
+        return False
+
+def languageDetect():
+    return 0
+
+def linkSearch():
+    return 0
