@@ -26,16 +26,4 @@
 ❗wordBlkList.txt是挖空**黑名单**，你可以将**不需要的单词**放到里面来避免它被挖空<br>
     wordBlkList.txt使用方式：以英文逗号间隔单词，或者以行间隔单词，二者皆可<br>
     注意修改黑名单时一定不要习惯性输入空格，单词之间仅需要逗号/空行即可。打空格就会导致那个单词不会被避免了<br>
-如果不希望所有带大写字母的单词被规避，请修改if txt_vocab.lower() != txt_vocab and True（在TextFunctions.py中）
-# 其他说明<br>
-⭐使用说明以后会找时间更新<br>
-（不过其实没啥可说的就是了(☆-ｖ-)）<br>
-⭐不定期更新<br>
-⭐未来可能会加上的功能<br>
-<ul>
-    <li>直接导出docx文件</li>
-    <li>支持部分网页链接直接解析</li>
-    <li>挖空白名单-白名单中的单词一定会被挖空</li>
-    <li>被挖空单词的数量按照字母数呈现某种趋势排列-例如正态分布</li>
-</ul>
-<br>
+❗如果不希望所有带大写字母的单词被规避，请修改if txt_vocab.lower() != txt_vocab and True（在TextFunctions.py中），将True修改为False即可<br>
