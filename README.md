@@ -19,7 +19,7 @@
 </ul>
 
 # 更新内容<br>
-暂无<br>
+下一版本将会更新网络爬取功能。目前正在研究selenium库以及requests库爬取<br>
 
 # 注意事项<br>
 ❗使用时需将文章本体复制到article.txt中<br>
