@@ -1,6 +1,6 @@
 try:
     from selenium import webdriver
-    import sys; import re
+    import sys; import re; import time
     from selenium.webdriver.common.by import By
     from selenium.webdriver.chrome.service import Service
     from bs4 import BeautifulSoup
@@ -20,8 +20,13 @@ def transGrabberForTED(linkIn):
     driverWebPage = loadBrowser()
     if linkIn[-11:] != '/transcript':
         linkIn += '/transcript'
-    driverWebPage.get(linkIn)
-
+    while True:
+        try:
+            driverWebPage.get(linkIn)
+            break
+        except:
+            print('An error occured! Retry in 5s!')
+            time.sleep(5)
     a = input("Make sure the page is properly loaded, then press enter. Wait/Refresh until you see transcript text.")
     windows = driverWebPage.window_handles
     driverWebPage.switch_to.window(windows[-1])
@@ -52,7 +57,13 @@ def transGrabberForCNNExp(linkIn):
     linkIn = linkIn.replace('%20',' '); linkIn = linkIn.replace('.html', '.txt')
     replacePo = re.search(r'\d{4}-\d{2}-\d{2}',linkIn).span()
     linkIn = linkIn.replace(linkIn[replacePo[0]:replacePo[1]],'cnn10 ' + linkIn[replacePo[0]:replacePo[1]])
-    webPage = requests.get(linkIn)
+    while True:
+        try:
+            webPage = requests.get(linkIn)
+            break
+        except:
+            print('An error occured! Retry in 5s!')
+            time.sleep(5)
     textDownDiv = webPage.text.replace('\r\n','\n').split('\n')
     with open(textDownDiv[0] + '.txt', 'w', encoding='utf-8') as fileObject:
         fileObject.write(webPage.text.replace('\r\n','\n'))
@@ -65,7 +76,7 @@ def transGrabberForCNNExp(linkIn):
                 Switch = 1
         elif Switch == 1:
             if re.search(r'Aired .*a ET',item):
-                Title = item.split('Aired')[0][:-1]
+                Title = item.split(' Aired')[0]
                 Switch = 2
         elif Switch == 2:
             if re.match(r'THIS IS A RUSH TRANSCRIPT',item):
