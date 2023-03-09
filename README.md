@@ -17,20 +17,17 @@
     <li>校对文章语法错误和单词拼写错误<br><br></li>
 </ul>
 
-# 注意事项<br>
-❗某些地方的横线意外的长的问题仍未得到解决，因为我根本不知道是如何引发的<br><br>
-
 # 关于 NetworkFunctions.py 【非必需文件】的使用说明<br>
-## 从1.1.0 版本开始正式引入了特定网站文本抓取。对该文件说明如下<br>
+## 从 1.1.0 版本开始正式引入了特定网站文本抓取。对该文件说明如下<br>
 ## 1.对于TED演讲稿抓取的说明：<br>
-**适用版本：V1.1.0 ~ V1.1.2**<br>
+**适用版本：V1.1.0 ~ V1.1.3**<br>
 **第三方库需求：selenium、lxml、bs4**<br>
 **重要提示：需要安装Edge浏览器，需要安装Egde浏览器对应版本驱动** [->点击进入 Edge 驱动下载链接](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/#downloads "Edge驱动下载链接")<br>
 将需要抓取的talk主页链接-*例如https://www.ted.com/talks/frances_s_chance_are_insect_brains_the_secret_to_great_ai*(可选：*/transcript*)链接粘贴到 article.txt 中。链接后不能包含例如rid=???或/comments等后缀。目前版本的程序没有添加识别这些内容的代码，也没有通过selenium库的点击来获取 (因为测试中出现了一些目前我无法解决的问题) ，仅通过获取元素来识别transcript部分。<br>
 使用这个功能时**仅在txt文件中粘贴链接**即可，请勿加入其他文字造成干扰。<br><br>
 
-## 2.对于CNN 10*演讲稿抓取的说明<br>
-**适用版本：V1.1.2**<br>
+## 2.对于CNN 10*字幕抓取的说明<br>
+**适用版本：V1.1.2 ~ V1.1.3**<br>
 **第三方库需求：requests**<br>
 \*仅限于 http://www.listeningexpress.com/cnn10/ 站点中的文本抓取<br>
 链接应类似于这样：http://www.listeningexpress.com/cnn10/2022-12-07%20Is%20The%20Economy%20Bad.html 才可被识别。这个网站的抓取依靠requests库完成，所以不需要打开额外的窗口。<br><br>
@@ -88,7 +85,10 @@ tomato,orange,strawberry,potato,cabbage,eggplant,carrot,watermelon-killer<br>
 将你的文章或链接按使用方式粘贴在里面<br>
 
 **@Test paper.txt 与 @Answer sheet.txt**<br>
-@Test paper.txt 为挖完空后生成的文本文件，@Answer sheet.txt 为挖空处单词答案文件<br><br>
+@Test paper.txt 为挖完空后生成的文本文件，@Answer sheet.txt 为挖空处单词答案文件<br>
+
+**其他生成的文件**<br>
+这些文件为使用程序进行爬取时得到的的包含演讲稿/字幕等原内容的 txt 文件，可用于用户其他目的的使用。具体文件名取决于原标题<br><br>
 
 # 关于测试中所用程序版本及第三方库的说明<br>
 **根据我电脑中程序版本列出，仅保证以下版本程序的正确运行**<br>
@@ -99,6 +99,12 @@ bs4==0.0.1<br>
 lxml==4.9.2<br>
 requests==2.28.1<br>
 selenium==4.7.2<br><br>
+
+# Version 1.1.3更新内容<br>
+1.修复了某些横线会意外的长的问题<br>
+2.为网页爬取功能增加试错机制，在失败5秒后会重新尝试爬取或加载网页<br>
+3.修复了 CNN 字幕无法正确去除的问题。现在，所有检测到标记的字幕会被统一输出为【SUBTITLE】标识并去除内容文本<br>
+4.修复了某些情况下对标记为 CNN 的文章挖空时名字部分标识不正确的问题<br>
 
 # Version 1.1.2更新内容<br>
 1.增加CNN演讲稿(目前**仅限于第三方网址** *http://www.listeningexpress.com/cnn10/* )TXT文本抓取<br>
